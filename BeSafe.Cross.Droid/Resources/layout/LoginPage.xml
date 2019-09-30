@@ -51,16 +51,6 @@
         	android:layout_height="wrap_content"
         	local:MvxBind="Click LoginCommand" />
 
-    <Button
-        	android:text="Start Service"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	local:MvxBind="Click StartCommand" />
-    <Button
-  android:text="Stop Service"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  local:MvxBind="Click StopCommand" />
     
 	</LinearLayout>
 </RelativeLayout>

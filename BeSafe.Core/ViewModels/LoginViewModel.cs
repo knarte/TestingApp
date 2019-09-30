@@ -88,53 +88,72 @@ namespace BeSafe.Core.ViewModels
             this.Email = "desarrollo@navisaf.com";
             this.Password = "c4sc4j4l";
             this.IsLoading = false;
+
+            GoToNextPage();
+        }
+
+        private async void GoToNextPage()
+        {
+            if (Settings.SavedInstanceState == true)
+            {
+                
+            }
+
         }
 
         private async void DoLoginCommand()
         {
-            this.permissionService.PermissionRequest("android.permission.ACCESS_FINE_LOCATION");
-
-            if (string.IsNullOrEmpty(this.Email))
+            if(Settings.SavedInstanceState == false)
             {
-                this.dialogService.Alert("Error", "You must enter an email.", "Accept");
-                return;
-            }
+                this.permissionService.PermissionRequest("android.permission.ACCESS_FINE_LOCATION");
 
-            if (string.IsNullOrEmpty(this.Password))
-            {
-                this.dialogService.Alert("Error", "You must enter a password.", "Accept");
-                return;
-            }
+                if (string.IsNullOrEmpty(this.Email))
+                {
+                    this.dialogService.Alert("Error", "You must enter an email.", "Accept");
+                    return;
+                }
 
-            this.IsLoading = true;
+                if (string.IsNullOrEmpty(this.Password))
+                {
+                    this.dialogService.Alert("Error", "You must enter a password.", "Accept");
+                    return;
+                }
 
-            var request = new TokenRequest
-            {
-                Password = this.Password,
-                User = this.Email,
-                BaseName = "holcim"
-            };
+                this.IsLoading = true;
 
-            var response = await this.apiService.GetTokenAsync(
-                "https://navisafsdkapi-qa.azurewebsites.net",
-                "/api",
-                "/Account/Login",
-                request);
+                var request = new TokenRequest
+                {
+                    Password = this.Password,
+                    User = this.Email,
+                    BaseName = "holcim"
+                };
 
-            if (!response.IsSuccess)
-            {
+                var response = await this.apiService.GetTokenAsync(
+                    "https://navisafsdkapi-qa.azurewebsites.net",
+                    "/api",
+                    "/Account/Login",
+                    request);
+
+                if (!response.IsSuccess)
+                {
+                    this.IsLoading = false;
+                    this.dialogService.Alert("Error", "User or password incorrect.", "Accept");
+                    return;
+                }
+
+                var token = (TokenResponse)response.Result;
+                Settings.UserEmail = this.Email;
+                Settings.Token = JsonConvert.SerializeObject(token);
                 this.IsLoading = false;
-                this.dialogService.Alert("Error", "User or password incorrect.", "Accept");
-                return;
+
+                await this.navigationService.Navigate<GPSLocationViewModel>();
+            }
+            else
+            {
+                //this.dialogService.Alert("Ok", "Fuck yeah!", "Accept");
+                await this.navigationService.Navigate<GPSLocationViewModel>();
             }
 
-            var token = (TokenResponse)response.Result;
-            Settings.UserEmail = this.Email;
-            Settings.Token = JsonConvert.SerializeObject(token);
-            this.IsLoading = false;
-
-            //this.dialogService.Alert("Ok", "Fuck yeah!", "Accept");
-            await this.navigationService.Navigate<GPSLocationViewModel>();
         }
 
         private void DoStartCommand()

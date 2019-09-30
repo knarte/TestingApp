@@ -12,7 +12,7 @@ namespace BeSafe.Cross.Droid.Views
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(savedInstanceState);
+            base.OnCreate(savedInstanceState);            
             this.SetContentView(Resource.Layout.LoginPage);
         }
     }

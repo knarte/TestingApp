@@ -21,6 +21,7 @@ namespace BeSafe.Core
 
 
             this.RegisterAppStart<LoginViewModel>();
+            //this.RegisterAppStart<GPSLocationViewModel>();
         }
     }
 
