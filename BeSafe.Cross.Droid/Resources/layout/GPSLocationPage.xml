@@ -1,0 +1,66 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:local="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+        <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	android:text="The lat and long are:" />
+    	<TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text Latitude" />
+        <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text Longitude" />
+        <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text Speed" />
+        <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text Accuracy" />
+        <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text Altitude" />
+            <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text Heading" />
+            <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text AltitudeAccuracy" />
+            <TextView
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textSize="30dp"
+        	local:MvxBind="Text HeadingAccuracy" />
+            <Button
+        	android:text="Start Service"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	local:MvxBind="Click StartCommand" />
+            <Button
+        	android:text="Stop Service"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	local:MvxBind="Click StopCommand" />
+
+	</LinearLayout>
+
+
