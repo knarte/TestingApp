@@ -10,6 +10,7 @@ namespace BeSafe.Core.ViewModels
     {
         #region Attributes
         private readonly ICalculationService calculationService;
+        private readonly IPermissionService dialogService;
         private decimal subTotal;
         private int generosity;
         private decimal tip;
@@ -59,9 +60,11 @@ namespace BeSafe.Core.ViewModels
         #endregion
 
         #region Constructors
-        public TipViewModel(ICalculationService calculationService)
+        public TipViewModel(ICalculationService calculationService,
+                            IPermissionService dialogService)
         {
             this.calculationService = calculationService;
+            this.dialogService = dialogService;
         }
         #endregion
 

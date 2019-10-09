@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace BeSafe.Core.ViewModels
 {
@@ -146,12 +144,12 @@ namespace BeSafe.Core.ViewModels
                 Settings.Token = JsonConvert.SerializeObject(token);
                 this.IsLoading = false;
 
-                await this.navigationService.Navigate<GPSLocationViewModel>();
+                await this.navigationService.Navigate<MenuViewModel>();
             }
             else
             {
                 //this.dialogService.Alert("Ok", "Fuck yeah!", "Accept");
-                await this.navigationService.Navigate<GPSLocationViewModel>();
+                await this.navigationService.Navigate<MenuViewModel>();
             }
 
         }

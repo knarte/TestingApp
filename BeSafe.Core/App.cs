@@ -4,6 +4,8 @@ using System.Text;
 
 namespace BeSafe.Core
 {
+    using BeSafe.Core.Interfaces;
+    using MvvmCross;
     using MvvmCross.IoC;
     using MvvmCross.ViewModels;
     using ViewModels;
@@ -19,9 +21,9 @@ namespace BeSafe.Core
                 .RegisterAsLazySingleton();
 
 
-
-            this.RegisterAppStart<LoginViewModel>();
-            //this.RegisterAppStart<GPSLocationViewModel>();
+            //this.RegisterAppStart<TipViewModel>();
+            this.RegisterCustomAppStart<AppStart>();
+            //this.RegisterAppStart<LoginViewModel>();
         }
     }
 
