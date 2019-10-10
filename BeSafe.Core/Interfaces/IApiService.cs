@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BeSafe.Core.Models;
+using BeSafe.Core.Models.Internal.Requests;
+using BeSafe.Core.Models.Internal.Responses;
 
 namespace BeSafe.Core.Interfaces
 {

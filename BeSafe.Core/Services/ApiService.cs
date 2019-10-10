@@ -13,6 +13,8 @@ namespace BeSafe.Core.Services
     using System.Net.Http.Headers;
     using System.Text;
     using BeSafe.Core.Interfaces;
+    using BeSafe.Core.Models.Internal.Responses;
+    using BeSafe.Core.Models.Internal.Requests;
 
     public class ApiService : IApiService
     {

@@ -6,6 +6,8 @@ namespace BeSafe.Core.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
+    using BeSafe.Core.Models.Internal.Responses;
+    using BeSafe.Core.Models.Provider;
     using Helpers;
     using Interfaces;
     using Models;

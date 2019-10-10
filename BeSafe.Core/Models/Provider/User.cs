@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BeSafe.Core.Models
+namespace BeSafe.Core.Models.Provider
 {
     public partial class User
     {

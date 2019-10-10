@@ -4,6 +4,8 @@ namespace BeSafe.Core.ViewModels
 {
     using System.Windows.Input;
     using BeSafe.Core.Helpers;
+    using BeSafe.Core.Models.Internal.Requests;
+    using BeSafe.Core.Models.Internal.Responses;
     using Interfaces;
     using Models;
     using MvvmCross.Commands;

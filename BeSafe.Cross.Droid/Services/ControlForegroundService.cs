@@ -24,7 +24,7 @@ namespace BeSafe.Cross.Droid.Services
         {
             this.locationForegroundService = new LocationForegroundService();
 
-            var top = Mvx.Resolve<IMvxAndroidCurrentTopActivity>();
+            var top = Mvx.IoCProvider.Resolve<IMvxAndroidCurrentTopActivity>();
             act = top.Activity;
             context = act;
 

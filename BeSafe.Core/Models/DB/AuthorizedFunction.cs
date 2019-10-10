@@ -1,7 +1,9 @@
 ﻿using System;
-namespace BeSafe.Core.Models
-{
+using SQLite;
 
+namespace BeSafe.Core.Models.DB
+{
+    [Table("AuthorizedFunction")]
     public class AuthorizedFunction
     {
         public short Id { get; set; }
@@ -12,5 +14,5 @@ namespace BeSafe.Core.Models
         public DateTime CreationDate { get; set; }
         public string IconPath { get; set; }
     }
-    
+
 }

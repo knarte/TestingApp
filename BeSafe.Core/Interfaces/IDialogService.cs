@@ -19,11 +19,12 @@ namespace BeSafe.Core.Interfaces
             Action confirmed,
             Action dismissed);
 
-        //void Alert(
-        //    string message,
-        //    string title,
-        //    string okbtnText,
-        //    Action confirmed);
+        void Alert(
+            string message,
+            string title,
+            string okbtnText,
+            string dismissButtonTitle,
+            Action confirmed);
 
         //void Confirm(
         //    string title,

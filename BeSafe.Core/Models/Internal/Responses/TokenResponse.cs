@@ -1,7 +1,8 @@
 ﻿
-namespace BeSafe.Core.Models
+namespace BeSafe.Core.Models.Internal.Responses
 {
     using System;
+    using BeSafe.Core.Models.Provider;
     using Newtonsoft.Json;
 
     public class TokenResponse

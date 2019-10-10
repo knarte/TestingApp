@@ -25,7 +25,7 @@ namespace BeSafe.Cross.Droid.Services
     {
         public void PermissionRequest(string permissionCode)
         {
-            var top = Mvx.Resolve<IMvxAndroidCurrentTopActivity>();
+            var top = Mvx.IoCProvider.Resolve<IMvxAndroidCurrentTopActivity>();
             var act = top.Activity;
 
             if (ContextCompat.CheckSelfPermission(act, permissionCode) != (int)Permission.Granted)

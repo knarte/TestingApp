@@ -1,23 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:local="http://schemas.android.com/apk/res-auto"
-	android:orientation="horizontal"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-    	<ffimageloading.cross.MvxCachedImageView
-    	android:layout_width="75dp"
-    	android:layout_height="75dp"
-    	android:layout_margin="10dp"
-    	local:MvxBind="ImagePath IconPath" />
-	<LinearLayout
-    	android:orientation="vertical"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent">
-    	<TextView
-        	android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:textSize="75dp"
-        	local:MvxBind="Text Name" />
-	</LinearLayout>
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@android:color/white">
+    <ffimageloading.cross.MvxCachedImageView
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_margin="10dp"
+        local:MvxBind="ImagePath IconPath" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="35dp"
+            local:MvxBind="Text Name"
+            android:id="@+id/textView2" />
+    </LinearLayout>
 </LinearLayout>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BeSafe.Core.Models
+namespace BeSafe.Core.Models.Internal.Responses
 {
     public class Response
     {

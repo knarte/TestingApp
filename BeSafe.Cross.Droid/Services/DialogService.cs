@@ -28,7 +28,7 @@
             Action confirmed,
             Action dismissed)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Mvx.Resolve<IMvxAndroidCurrentTopActivity>().Activity);
+            AlertDialog.Builder builder = new AlertDialog.Builder(Mvx.IoCProvider.Resolve<IMvxAndroidCurrentTopActivity>().Activity);
             AlertDialog alertdialog = builder.Create();
             builder.SetTitle(title);
             builder.SetMessage(message);
@@ -39,6 +39,28 @@
                     dismissed.Invoke();
                 }
             });
+
+            builder.SetPositiveButton(okButtonTitle, (senderAlert, args) => {
+                if (confirmed != null)
+                {
+                    confirmed.Invoke();
+                }
+            });
+
+            builder.Show();
+        }
+
+        public void Alert(
+            string title,
+            string message,
+            string okButtonTitle,
+            string dismissButtonTitle,
+            Action confirmed)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Mvx.IoCProvider.Resolve<IMvxAndroidCurrentTopActivity>().Activity);
+            AlertDialog alertdialog = builder.Create();
+            builder.SetTitle(title);
+            builder.SetMessage(message);
 
             builder.SetPositiveButton(okButtonTitle, (senderAlert, args) => {
                 if (confirmed != null)

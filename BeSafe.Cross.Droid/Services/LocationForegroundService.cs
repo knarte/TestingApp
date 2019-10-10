@@ -130,7 +130,7 @@ namespace BeSafe.Cross.Droid.Services
         /// <returns>The content intent.</returns>
         PendingIntent BuildIntentToShowMainActivity()
         {
-            var top = Mvx.Resolve<IMvxAndroidCurrentTopActivity>();
+            var top = Mvx.IoCProvider.Resolve<IMvxAndroidCurrentTopActivity>();
             var act = top.Activity;
             var context = act;
 
