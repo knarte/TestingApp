@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@android:color/black"
+    local:MvxBind="BackgroundColor TextToColor(BackgroundColor)"
 >
 
      <LinearLayout
@@ -22,7 +22,7 @@
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                local:MvxBind="Text ActualSpeedTitle Mode=TwoWay; TextColor ActualSpeedTextColor "/>
+                local:MvxBind="Text ActualSpeedTitle; TextColor TextToColor(ActualSpeedTextColor)"/>
         
 
                <TextView
@@ -32,7 +32,7 @@
                 android:textSize="40dp"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                local:MvxBind="Text ActualSpeed Mode=TwoWay; TextColor ActualSpeedTextColor"/>
+                local:MvxBind="Text ActualSpeed; TextColor TextToColor(ActualSpeedTextColor)"/>
 
     </LinearLayout>
 
@@ -52,7 +52,7 @@
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                local:MvxBind="Text SpeedLimitTitle Mode=TwoWay; TextColor SpeedLimitTextColor"
+                local:MvxBind="Text SpeedLimitTitle; TextColor TextToColor(SpeedLimitTextColor)"
         />
         <TextView
                 android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                 android:textSize="65dp"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                local:MvxBind="Text SpeedLimit Mode=TwoWay; TextColor SpeedLimitTextColor"
+                local:MvxBind="Text SpeedLimit; TextColor TextToColor(SpeedLimitTextColor)"
         />
        <!-- <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="FINALIZAR RUTA"
-            local:MvxBind="Click EndWorkHoursCommand; Visibility IsVisibleEndWorkHours"
+            local:MvxBind="Click EndWorkHoursCommand; Visibility Visibility(IsVisibleEndWorkHours)"
             android:layout_gravity="bottom"/>
 
         <Button
@@ -90,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="INICIAR RUTA"
-            local:MvxBind="Click StartWorkHoursCommand; Visibility IsVisibleStartWorkHours"
+            local:MvxBind="Click StartWorkHoursCommand; Visibility Visibility(IsVisibleStartWorkHours)"
             android:layout_gravity="bottom"/>
 
 </FrameLayout>

@@ -17,6 +17,7 @@ using BeSafe.Core.Helpers;
 using MvvmCross.Plugin.Color;
 using System.Drawing;
 using System.Globalization;
+using MvvmCross.Platform.UI;
 
 namespace BeSafe.Core.ViewModels
 {
@@ -27,6 +28,7 @@ namespace BeSafe.Core.ViewModels
         private readonly IApiService apiService;
         private readonly IDialogService dialogService;
         private readonly IMvxMessenger messenger;
+        private readonly IMvxNativeColor nativeColor;
         private readonly IMvxLocationWatcher watcher;
         private readonly IControlForegroundService controlForegroundService;
         #endregion
@@ -146,6 +148,8 @@ namespace BeSafe.Core.ViewModels
             get => this.backgroundColor;
             set => this.SetProperty(ref this.backgroundColor, value);
         }
+
+        private int minimunSpeedLimitZone;
 
         public int GPSAccuracyIndex
         {
@@ -284,10 +288,6 @@ namespace BeSafe.Core.ViewModels
             }
         }
         #endregion
-
-
-    
-
   
         private void OnLocationMessage(LocationMessage locationMessage)
         {
@@ -300,12 +300,12 @@ namespace BeSafe.Core.ViewModels
                 Accuracy = locationMessage.Accuracy
             };
 
-            UpdateActualSpeed(actualLocation);
+            UpdateActualSpeed(actualLocation).Wait();
 
 
         }
 
-        private void UpdateActualSpeed(Location location)
+        private async Task UpdateActualSpeed(Location location)
         {
             try
             {
@@ -323,10 +323,12 @@ namespace BeSafe.Core.ViewModels
                     {
                         this.ActualSpeed = Convert.ToString(actualSpeedKM_H) + "  KM/H";
                         this.actualLocation = location;
+                        await CategorizingActualSpeed(minimunSpeedLimitZone);
                     }
                     else
                     {
                         this.ActualSpeed = Convert.ToString(lastSpeedKM_H) + "  KM/H";
+                        await CategorizingActualSpeed(minimunSpeedLimitZone);
                     }
                 }
             }
@@ -369,8 +371,227 @@ namespace BeSafe.Core.ViewModels
 
         private async void EndWorkHours()
         {
+            this.IsVisibleSpeedLimit = false;
+            this.IsVisibleActualSpeed = false;
+            this.IsVisibleEndWorkHours = true;
+            this.IsVisibleSpeedLimitTitle = true;
+            this.IsVisibleActualSpeedTitle = true;
+            this.IsVisibleStartWorkHours = true;
             Settings.SavedInstanceState = this.controlForegroundService.StopServices();
             this.messenger.Unsubscribe<LocationMessage>(token);
+        }
+
+        private void InitialSettings()
+        {
+            this.IsVisibleSpeedLimit = false;
+            this.IsVisibleActualSpeed = false;
+            this.IsVisibleEndWorkHours = false;
+            this.IsVisibleSpeedLimitTitle = false;
+            this.IsVisibleActualSpeedTitle = false;
+
+            this.IsVisibleStartWorkHours = true;
+
+            this.SpeedLimitTitle = "LÍMITE DE VELOCIDAD";
+            this.ActualSpeedTitle = "VELOCIDAD ACTUAL";
+
+
+
+            this.SpeedLimitTextColor = "white";
+            this.ActualSpeedTextColor = "white";
+            this.BackgroundColor = "black";
+
+            this.minimunSpeedLimitZone = 60;
+            this.SpeedLimit = minimunSpeedLimitZone.ToString() + " KM/H";
+
+            //LoadingText();
+
+        }
+
+        //public async Task CheckDeviceInsideZone(int count)
+        //{
+        //    try
+        //    {
+
+        //        if (count % Endpoint.EXCECUTE_CHECK_DEVICE_INSIDE_ZONE == 0 && counter > 0 && this.adviceGPSMessage)
+        //        {
+        //            Zone nearestZone = new Zone();
+        //            Zone insideZone = new Zone();
+
+        //            var location = this.actualLocation;
+        //            if (location != null && location.Latitude != 0 && location.Longitude != 0)
+        //            {
+        //                //var filteredZones = FilteringZonesMobileIsInside(location);
+
+        //                var filteredZones = this.lstZones;
+
+        //                GetInsideZoneMobile(nearestZone, filteredZones, location);
+
+        //                #region Pendiente por revisar
+        //                //var distanceBetweenRadiusAndMobile = GetInsideZoneMobile(nearestZone, filteredZones, location);
+        //                //GetNearestZoneToMobile(nearestZone, distanceBetweenRadiusAndMobile)
+        //                #endregion
+
+        //                await GetMinimunSpeedLimitZoneIntersection(filteredZones);
+
+        //                //this.lastLocation = this.actualLocation;
+        //                this.ActualSpeedTitle = Languages.ActualSpeedTitle;
+        //            }
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var methodName = "CheckDeviceInsideZone";
+        //        var date = DateTime.UtcNow.ToString();
+        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
+        //        throw ex;
+        //    }
+        //}
+
+        //private void GetInsideZoneMobile(Zone nearestZone, List<Zone> filteredZones, Location location)
+        //{
+        //    try
+        //    {
+        //        double shortestDistance = 100000000000.0;
+        //        double distanceBetweenRadiusAndMobile = 0.0;
+
+        //        foreach (var zone in filteredZones)
+        //        {
+        //            var locationZone = new Location(zone.CentroidLatitude.Value, zone.CentroidLongitude.Value);
+        //            var distanceBetweenZoneAndMobile = location.CalculateDistance(locationZone, DistanceUnits.Kilometers);
+        //            distanceBetweenRadiusAndMobile = (distanceBetweenZoneAndMobile * 1000) - zone.Radius;
+
+        //            if (distanceBetweenRadiusAndMobile < 0 && distanceBetweenZoneAndMobile < shortestDistance)
+        //            {
+        //                shortestDistance = distanceBetweenZoneAndMobile;
+        //                nearestZone = zone;
+
+        //                if (distanceBetweenRadiusAndMobile > 0)
+        //                {
+        //                    this.lstZones.Where(q => q.Id == nearestZone.Id).FirstOrDefault().IsInsideOfZone = false;
+        //                }
+        //                else
+        //                {
+        //                    this.lstZones.Where(q => q.Id == nearestZone.Id).FirstOrDefault().IsInsideOfZone = true;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                this.lstZones.Where(q => q.Id == zone.Id).FirstOrDefault().IsInsideOfZone = false;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var methodName = "GetInsideZoneMobile";
+        //        var date = DateTime.UtcNow.ToString();
+        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
+        //        throw ex;
+        //    }
+        //}
+
+
+        //private async Task GetMinimunSpeedLimitZoneIntersection(List<Zone> filteredZones)
+        //{
+        //    try
+        //    {
+        //        var minimunSpeedLimitZone = 10000000;
+        //        var insideOfActualZones = filteredZones.Where(q => q.IsInsideOfZone == true).ToList();
+        //        if (insideOfActualZones.Any())
+        //        {
+
+        //            minimunSpeedLimitZone = await GetMinimunSpeedLimit(insideOfActualZones, minimunSpeedLimitZone);
+
+        //            await CategorizingActualSpeed(minimunSpeedLimitZone);
+
+        //            this.SpeedLimitTitle = Languages.SpeedLimitTitle;
+        //            this.SpeedLimit = minimunSpeedLimitZone.ToString() + " KM/H";
+
+        //            //SpeedLimitVoiceNotification(minimunSpeedLimitZone, true);
+        //        }
+        //        else
+        //        {
+        //            //var listParameter = this.lstParameter.Where(q => q.Parameters == "VelMaximaRural").FirstOrDefault();//await dataService.GetAllParameter("VelMaximaRural");
+        //            //minimunSpeedLimitZone = Convert.ToInt32(listParameter.Value.ToString());
+
+        //            await CategorizingActualSpeed(minimunSpeedLimitZone);
+
+        //            this.SpeedLimitTitle = Languages.SpeedLimitTitle;
+        //            this.SpeedLimit = minimunSpeedLimitZone.ToString() + " KM/H";
+        //            this.speedLimitZone = minimunSpeedLimitZone;
+        //            //SpeedLimitVoiceNotification(minimunSpeedLimitZone, false);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var methodName = "GetMinimunSpeedLimitZoneIntersection";
+        //        var date = DateTime.UtcNow.ToString();
+        //        throw ex;
+        //    }
+
+        //}
+
+        private async Task CategorizingActualSpeed(int extractedNameInsideZone)
+        {
+            try
+            {
+                var actualSpeedExtracted = 0;
+
+                if (!string.IsNullOrEmpty(this.ActualSpeed))
+                {
+                    actualSpeedExtracted = Convert.ToInt32(this.ActualSpeed.Substring(0, 3));
+                }
+
+                if (actualSpeedExtracted < (extractedNameInsideZone - extractedNameInsideZone * 0.15))
+                {
+                    ScreenColorSettings("Black", "White", "White");
+                    //await SendEventToAPIProcess();
+                    this.activateNearSpeedLimitAdvice = true;
+                }
+                else if (actualSpeedExtracted >= (extractedNameInsideZone - extractedNameInsideZone * 0.15) && actualSpeedExtracted <= extractedNameInsideZone)
+                {
+                    ScreenColorSettings("Yellow", "Black", "Black");
+                    //NearToSpeedLimitVoiceNotification();
+                    //await SendEventToAPIProcess();
+                }
+                else if (actualSpeedExtracted > extractedNameInsideZone)
+                {
+                    ScreenColorSettings("Red", "White", "White");
+                    //GetEventMaxSpeed();
+                    //await SpeedExcessVoiceNotification();
+                    this.activateNearSpeedLimitAdvice = true;
+                }
+                else
+                {
+                    ScreenColorSettings("Black", "White", "White");
+                    //await SendEventToAPIProcess();
+                    this.activateNearSpeedLimitAdvice = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                var methodName = "CategorizingActualSpeed";
+                var date = DateTime.UtcNow.ToString();
+                throw ex;
+            }
+
+        }
+
+        private void ScreenColorSettings(string backgroundColor, string speedLimitTextColor, string actualSpeedTextColor)
+        {
+            try
+            {
+                this.BackgroundColor = backgroundColor;
+                this.SpeedLimitTextColor = speedLimitTextColor;
+                this.ActualSpeedTextColor = actualSpeedTextColor;
+            }
+            catch (Exception ex)
+            {
+                var methodName = "ScreenColorSettings";
+                var date = DateTime.UtcNow.ToString();
+                throw ex;
+            }
+
         }
 
         //private async Task MainMethodProcess()
@@ -489,23 +710,7 @@ namespace BeSafe.Core.ViewModels
         //#endregion
 
         //#region Inicializations
-        private void InitialSettings()
-        {
-            this.IsVisibleSpeedLimit = false;
-            this.IsVisibleActualSpeed = false;
-            this.IsVisibleEndWorkHours = false;
-            this.IsVisibleSpeedLimitTitle = false;
-            this.IsVisibleActualSpeedTitle = false;
 
-            this.IsVisibleStartWorkHours = true;
-
-            this.SpeedLimitTitle = "LÍMITE DE VELOCIDAD";
-            this.ActualSpeedTitle = "VELOCIDAD ACTUAL";
-            this.SpeedLimitTextColor = new MvxColor()
-            this.ActualSpeedTextColor = "#FFFFFF";
-            //LoadingText();
-
-        }
 
         //private void LoadingText()
         //{
@@ -546,46 +751,7 @@ namespace BeSafe.Core.ViewModels
 
         //}
 
-        //public async Task CheckDeviceInsideZone(int count)
-        //{
-        //    try
-        //    {
 
-        //        if (count % Endpoint.EXCECUTE_CHECK_DEVICE_INSIDE_ZONE == 0 && counter > 0 && this.adviceGPSMessage)
-        //        {
-        //            Zone nearestZone = new Zone();
-        //            Zone insideZone = new Zone();
-
-        //            var location = this.actualLocation;
-        //            if (location != null && location.Latitude != 0 && location.Longitude != 0)
-        //            {
-        //                //var filteredZones = FilteringZonesMobileIsInside(location);
-
-        //                var filteredZones = this.lstZones;
-
-        //                GetInsideZoneMobile(nearestZone, filteredZones, location);
-
-        //                #region Pendiente por revisar
-        //                //var distanceBetweenRadiusAndMobile = GetInsideZoneMobile(nearestZone, filteredZones, location);
-        //                //GetNearestZoneToMobile(nearestZone, distanceBetweenRadiusAndMobile)
-        //                #endregion
-
-        //                await GetMinimunSpeedLimitZoneIntersection(filteredZones);
-
-        //                //this.lastLocation = this.actualLocation;
-        //                this.ActualSpeedTitle = Languages.ActualSpeedTitle;
-        //            }
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var methodName = "CheckDeviceInsideZone";
-        //        var date = DateTime.UtcNow.ToString();
-        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
-        //        throw ex;
-        //    }
-        //}
 
         //private void ReadGPSActualData()
         //{
@@ -669,7 +835,7 @@ namespace BeSafe.Core.ViewModels
 
 
 
-        
+
 
         //private void IsActivatedParameter(string parameter, ref string data, ref bool isActivated)
         //{
@@ -1135,112 +1301,11 @@ namespace BeSafe.Core.ViewModels
 
         //}
 
-        //private void GetInsideZoneMobile(Zone nearestZone, List<Zone> filteredZones, Location location)
-        //{
-        //    try
-        //    {
-        //        double shortestDistance = 100000000000.0;
-        //        double distanceBetweenRadiusAndMobile = 0.0;
 
-        //        foreach (var zone in filteredZones)
-        //        {
-        //            var locationZone = new Location(zone.CentroidLatitude.Value, zone.CentroidLongitude.Value);
-        //            var distanceBetweenZoneAndMobile = location.CalculateDistance(locationZone, DistanceUnits.Kilometers);
-        //            distanceBetweenRadiusAndMobile = (distanceBetweenZoneAndMobile * 1000) - zone.Radius;
 
-        //            if (distanceBetweenRadiusAndMobile < 0 && distanceBetweenZoneAndMobile < shortestDistance)
-        //            {
-        //                shortestDistance = distanceBetweenZoneAndMobile;
-        //                nearestZone = zone;
 
-        //                if (distanceBetweenRadiusAndMobile > 0)
-        //                {
-        //                    this.lstZones.Where(q => q.Id == nearestZone.Id).FirstOrDefault().IsInsideOfZone = false;
-        //                }
-        //                else
-        //                {
-        //                    this.lstZones.Where(q => q.Id == nearestZone.Id).FirstOrDefault().IsInsideOfZone = true;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                this.lstZones.Where(q => q.Id == zone.Id).FirstOrDefault().IsInsideOfZone = false;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var methodName = "GetInsideZoneMobile";
-        //        var date = DateTime.UtcNow.ToString();
-        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
-        //        throw ex;
-        //    }
-        //}
 
-        //private async Task CategorizingActualSpeed(int extractedNameInsideZone)
-        //{
-        //    try
-        //    {
-        //        var actualSpeedExtracted = 0;
 
-        //        if (!string.IsNullOrEmpty(this.ActualSpeed))
-        //        {
-        //            actualSpeedExtracted = Convert.ToInt32(this.ActualSpeed.Substring(0, 3));
-        //        }
-
-        //        if (actualSpeedExtracted < (extractedNameInsideZone - extractedNameInsideZone * 0.15))
-        //        {
-        //            ScreenColorSettings("Black", "White", "White");
-        //            await SendEventToAPIProcess();
-        //            this.activateNearSpeedLimitAdvice = true;
-        //        }
-        //        else if (actualSpeedExtracted >= (extractedNameInsideZone - extractedNameInsideZone * 0.15) && actualSpeedExtracted <= extractedNameInsideZone)
-        //        {
-        //            ScreenColorSettings("Yellow", "Black", "Black");
-        //            NearToSpeedLimitVoiceNotification();
-        //            await SendEventToAPIProcess();
-        //        }
-        //        else if (actualSpeedExtracted > extractedNameInsideZone)
-        //        {
-        //            ScreenColorSettings("Red", "White", "White");
-        //            GetEventMaxSpeed();
-        //            await SpeedExcessVoiceNotification();
-        //            this.activateNearSpeedLimitAdvice = true;
-        //        }
-        //        else
-        //        {
-        //            ScreenColorSettings("Black", "White", "White");
-        //            await SendEventToAPIProcess();
-        //            this.activateNearSpeedLimitAdvice = true;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var methodName = "CategorizingActualSpeed";
-        //        var date = DateTime.UtcNow.ToString();
-        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
-        //        throw ex;
-        //    }
-
-        //}
-
-        //private void ScreenColorSettings(string backgroundColor, string speedLimitTextColor, string actualSpeedTextColor)
-        //{
-        //    try
-        //    {
-        //        this.BackgroundColor = backgroundColor;
-        //        this.SpeedLimitTextColor = speedLimitTextColor;
-        //        this.ActualSpeedTextColor = actualSpeedTextColor;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var methodName = "ScreenColorSettings";
-        //        var date = DateTime.UtcNow.ToString();
-        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
-        //        throw ex;
-        //    }
-
-        //}
 
         //private void NearToSpeedLimitVoiceNotification()
         //{
@@ -1366,46 +1431,7 @@ namespace BeSafe.Core.ViewModels
         //    return totalDistance;
         //}
 
-        //private async Task GetMinimunSpeedLimitZoneIntersection(List<Zone> filteredZones)
-        //{
-        //    try
-        //    {
-        //        var minimunSpeedLimitZone = 10000000;
-        //        var insideOfActualZones = filteredZones.Where(q => q.IsInsideOfZone == true).ToList();
-        //        if (insideOfActualZones.Any())
-        //        {
 
-        //            minimunSpeedLimitZone = await GetMinimunSpeedLimit(insideOfActualZones, minimunSpeedLimitZone);
-
-        //            await CategorizingActualSpeed(minimunSpeedLimitZone);
-
-        //            this.SpeedLimitTitle = Languages.SpeedLimitTitle;
-        //            this.SpeedLimit = minimunSpeedLimitZone.ToString() + " KM/H";
-
-        //            SpeedLimitVoiceNotification(minimunSpeedLimitZone, true);
-        //        }
-        //        else
-        //        {
-        //            var listParameter = this.lstParameter.Where(q => q.Parameters == "VelMaximaRural").FirstOrDefault();//await dataService.GetAllParameter("VelMaximaRural");
-        //            minimunSpeedLimitZone = Convert.ToInt32(listParameter.Value.ToString());
-
-        //            await CategorizingActualSpeed(minimunSpeedLimitZone);
-
-        //            this.SpeedLimitTitle = Languages.SpeedLimitTitle;
-        //            this.SpeedLimit = minimunSpeedLimitZone.ToString() + " KM/H";
-        //            this.speedLimitZone = minimunSpeedLimitZone;
-        //            SpeedLimitVoiceNotification(minimunSpeedLimitZone, false);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var methodName = "GetMinimunSpeedLimitZoneIntersection";
-        //        var date = DateTime.UtcNow.ToString();
-        //        this.SaveFile(Endpoint.FILE_NAME, date + " - " + "ERROR - " + methodName + " - " + ex.Message);
-        //        throw ex;
-        //    }
-
-        //}
 
         //private void SpeedLimitVoiceNotification(int minimunSpeedLimitZone, bool entryToZone)
         //{

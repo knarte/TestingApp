@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:inputType="textEmailAddress"
-                android:hint="Username"
+                android:hint="Nombre de usuario"
                 local:MvxBind="Text Email" />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
@@ -46,8 +46,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:inputType="textPassword"
-                android:hint="Password"
+                android:hint="Contraseña"
                 local:MvxBind="Text Password" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:inputType="text"
+                android:hint="Base de datos"
+                local:MvxBind="Text BaseName" />
         </android.support.design.widget.TextInputLayout>
         <ProgressBar
         	android:layout_height="wrap_content"
@@ -60,7 +71,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login"
+            android:text="Ingresar"
             local:MvxBind="Click LoginCommand"/>
     </LinearLayout>
 </FrameLayout>

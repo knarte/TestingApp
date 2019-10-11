@@ -12,4 +12,9 @@ public class MenuView : MvxActivity<MenuViewModel>
         base.OnCreate(bundle);
         this.SetContentView(Resource.Layout.MenuPage);
     }
+
+
+
 }
+
+

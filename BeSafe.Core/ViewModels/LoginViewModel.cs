@@ -18,6 +18,7 @@ namespace BeSafe.Core.ViewModels
     {
         private string email;
         private string password;
+        private string baseName;
         private MvxCommand loginCommand;
         private readonly IApiService apiService;
         private readonly IDialogService dialogService;
@@ -44,6 +45,12 @@ namespace BeSafe.Core.ViewModels
         {
             get => this.password;
             set => this.SetProperty(ref this.password, value);
+        }
+
+        public string BaseName
+        {
+            get => this.baseName;
+            set => this.SetProperty(ref this.baseName, value);
         }
 
         public ICommand LoginCommand
@@ -87,6 +94,7 @@ namespace BeSafe.Core.ViewModels
             this.controlForegroundService.CreateService(Settings.SavedInstanceState);
             this.Email = "desarrollo@navisaf.com";
             this.Password = "c4sc4j4l";
+            this.BaseName = "edinsa";
             this.IsLoading = false;
 
             GoToNextPage();
@@ -129,7 +137,7 @@ namespace BeSafe.Core.ViewModels
                 };
 
                 var response = await this.apiService.GetTokenAsync(
-                    "https://navisafsdkapi-qa.azurewebsites.net",
+                    Endpoint.URL_BASE,
                     "/api",
                     "/Account/Login",
                     request);
@@ -145,7 +153,7 @@ namespace BeSafe.Core.ViewModels
                 Settings.UserEmail = this.Email;
                 Settings.Token = JsonConvert.SerializeObject(token);
                 this.IsLoading = false;
-
+                Settings.IsRemember = true;
                 await this.navigationService.Navigate<MenuViewModel>();
             }
             else

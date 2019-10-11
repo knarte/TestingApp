@@ -19,9 +19,9 @@ namespace BeSafe.Core
 
         protected override Task NavigateToFirstViewModel(object hint = null)
         {
-            if (Settings.SavedInstanceState)
+            if (Settings.IsRemember)
             {
-                return NavigationService.Navigate<GPSLocationViewModel>();
+                return NavigationService.Navigate<MenuViewModel>();
             }
             else
             {
